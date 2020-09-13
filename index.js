@@ -59,10 +59,7 @@ class Questions {
   async destinyBase() {
     dirBase = (
       await inquirer.prompt(
-        this.qStructure(
-          "Agregue el directorio el el que desa buscar:",
-          "dirBase"
-        )
+        this.qStructure("Agregue el directorio el que desea buscar:", "dirBase")
       )
     ).dirBase;
     console.log(`Directorio en el que se va a realizar la busqueda:${dirBase}`);
@@ -71,7 +68,7 @@ class Questions {
     extension = (
       await inquirer.prompt(
         this.qStructure(
-          "Agregue la extension del archivo que desea buscar:",
+          "Agregue la extensión del archivo que desea buscar:",
           "extension"
         )
       )
