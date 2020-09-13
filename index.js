@@ -26,7 +26,7 @@ function fromDir(startPath, filter) {
 }
 
 function moveFiles() {
-  let file;
+  let file = [];
   list.map((baseFile) => {
     if (os.type() == "Windows_NT") {
       file = baseFile.split("\\");
