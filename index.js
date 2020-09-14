@@ -6,6 +6,7 @@ let extension = "";
 let dirBase = "";
 let dirDestiny = "";
 let list = [];
+let operation = "";
 function fromDir(startPath, filter) {
   if (!fs.existsSync(startPath)) {
     console.log("no dir ", startPath);
@@ -44,6 +45,25 @@ function moveFiles() {
   });
 }
 
+function copyFiles() {
+  let file = [];
+  list.map((baseFile) => {
+    if (os.type() == "Windows_NT") {
+      file = baseFile.split("\\");
+    } else {
+      file = baseFile.split("/");
+    }
+    console.log(file);
+    file = file[file.length - 1];
+    fs.copyFile(baseFile, `${dirDestiny}/${file}`, function (err) {
+      if (err) {
+        console.log(`error:${err}`);
+      }
+      console.log(`Copy complete.${dirDestiny}/${file}`);
+    });
+  });
+}
+
 class Questions {
   qStructure(ques, name) {
     let questions = [
@@ -62,6 +82,17 @@ class Questions {
         this.qStructure("Agregue el directorio el que desea buscar:", "dirBase")
       )
     ).dirBase;
+    console.log(`Directorio en el que se va a realizar la busqueda:${dirBase}`);
+  }
+  async operation() {
+    operation = (
+      await inquirer.prompt(
+        this.qStructure(
+          "Operaciones: copiar ingrese 'C', mover 'M':",
+          "operation"
+        )
+      )
+    ).operation;
     console.log(`Directorio en el que se va a realizar la busqueda:${dirBase}`);
   }
   async extension() {
@@ -86,15 +117,18 @@ class Questions {
       )
     ).dirDestiny;
     console.log(`Extensiones que se va a buscar:${dirDestiny}`);
-    moveFiles();
+    if (operation == "M") {
+      moveFiles();
+    } else {
+      copyFiles();
+    }
   }
 }
-
-const questions = new Questions();
 
 async function init() {
   const questions = new Questions();
   await questions.destinyBase();
+  await questions.operation();
   await questions.extension();
   await questions.destinyDirectory();
 }
