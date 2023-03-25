@@ -7,31 +7,40 @@ let dirBase = "";
 let dirDestiny = "";
 let list = [];
 let operation = "";
-let allFormat=['jpg','jpeg','png','gif','webp','tiff','bmp','heif','svg','eps','pdf','psd','ai','xcf','indd',]
+let allFormat = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'tiff', 'bmp', 'heif', 'svg', 'eps', 'pdf', 'psd', 'ai', 'xcf', 'indd',]
 function fromDir(startPath, filter) {
   if (!fs.existsSync(startPath)) {
     console.log("no dir ", startPath);
     return;
   }
 
-  var files = fs.readdirSync(startPath);
-  for (var i = 0; i < files.length; i++) {
-    var filename = path.join(startPath, files[i]);
-    var stat = fs.lstatSync(filename);
- 
-    if (stat.isDirectory()) {
-      fromDir(filename, filter); //recurse
-    } else if (filterValidation(filename, filter)) {
-      list.push(filename);
-      console.log(filename);
+  try {
+    var files = fs.readdirSync(startPath);
+    for (var i = 0; i < files.length; i++) {
+      var filename = path.join(startPath, files[i]);
+      var stat
+      try {
+        var stat = fs.lstatSync(filename);
+      } catch (error) {
+        continue;
+      }
+
+      if (stat.isDirectory()) {
+        fromDir(filename, filter); //recurse
+      } else if (filterValidation(filename, filter)) {
+        list.push(filename);
+        console.log(filename);
+      }
     }
+  } catch (error) {
+    return
   }
 }
 
-function filterValidation(filename,filter) {
+function filterValidation(filename, filter) {
 
-  if (filter!='') {
-  return  filename.indexOf(filter) >= 0
+  if (filter != '') {
+    return filename.indexOf(filter) >= 0
   }
   const ext = filename.split('.')[1]
   return allFormat.includes(ext)
